@@ -7,12 +7,12 @@
     let tag = this;
 
     // need for login
+
     firebase.auth().onAuthStateChanged(userObj => {
       if (userObj) {
         this.user = userObj;
       } else {
         this.user = null;
-        this.room = null;
       }
       this.update();
     });
