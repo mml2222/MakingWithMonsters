@@ -10,12 +10,13 @@
       <button onclick={closeDialog}>Cancel</button>
     </form>
   </div>
-  <div>
+  <div show={showProjectTitle}>
     <h1> My Project: {inputProjectTitle} </h1>
   </div>
 
   <script>
     this.inputProjectTitle = null
+    this.showProjectTitle = false
 
     startNewProject(){
       showDialog = true
@@ -25,6 +26,8 @@
       showDialog = false
     }
 
+
+
     getStarted(e){
       e.preventDefault()
       this.inputProjectTitle = this.refs.projectTitle.value
@@ -32,9 +35,17 @@
         alert("Don't forget to answer the question 'What are you making today?'")
       }
       else{
-        showDialog = false
-        this.refs.projectTitle.value = ''
+        var projectData = {
+          Project_Name : this.inputProjectTitle,
+        };
+        var db = firebase.firestore();
+        var userProjectCollection = db.doc('Users/' + opts.userid).collection('Projects');
+        var newProject = userProjectCollection.add(projectData);
+        showDialog = false;
+        this.refs.projectTitle.value = '';
+        this.showProjectTitle = true;
       }
     }
-  </script>
+    </script>
+
 </create>
