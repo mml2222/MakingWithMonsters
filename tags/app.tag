@@ -7,7 +7,6 @@
     let tag = this;
 
     // need for login
-
     firebase.auth().onAuthStateChanged(userObj => {
       if (userObj) {
         this.user = userObj;
