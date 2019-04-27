@@ -17,6 +17,7 @@
   <script>
     this.inputProjectTitle = null
     this.showProjectTitle = false
+    this.db = firebase.firestore();
 
     startNewProject(){
       showDialog = true
@@ -35,14 +36,13 @@
       else {
         var userId = firebase.auth().currentUser.uid;
         if(userId != null) {
+          var userProjectCollection = this.db.doc('Users/' + userId).collection('Projects');
           if(!userProjectCollection){
             throw new Error('Error creating userProjectCollection');
           }
           var projectData = {
             Project_Name : this.inputProjectTitle,
           };
-          var db = firebase.firestore();
-          var userProjectCollection = db.doc('Users/' + userId).collection('Projects');
           userProjectCollection.add(projectData);
 
           showDialog = false;
