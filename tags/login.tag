@@ -5,12 +5,11 @@
   <div show={ user }>
     <!-- if user signin shows them their homepage -->
     <home></home>
-    <create userid={ userId }></create>
+    <create></create>
   </div>
   <script>
     // JAVASCRIPT
     this.user;
-    this.userId;
 
     // //set up database
     let database = firebase.firestore();
@@ -36,14 +35,12 @@
               email: firebase.auth().currentUser.email
             };
              database.collection('Users').doc(firebase.auth().currentUser.uid).set(userInfo);
-             this.userId = userInfo.id;
 					});
 					this.update();
 		    })
       }
       else {
 		    this.user = null;
-        this.userId = null;
 				stopListening();
 		  }
 			this.update();

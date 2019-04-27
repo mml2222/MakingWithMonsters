@@ -26,26 +26,35 @@
       showDialog = false
     }
 
-
-
     getStarted(e){
       e.preventDefault()
       this.inputProjectTitle = this.refs.projectTitle.value
       if(this.inputProjectTitle == ""){
         alert("Don't forget to answer the question 'What are you making today?'")
       }
-      else{
-        var projectData = {
-          Project_Name : this.inputProjectTitle,
-        };
-        var db = firebase.firestore();
-        var userProjectCollection = db.doc('Users/' + opts.userid).collection('Projects');
-        var newProject = userProjectCollection.add(projectData);
-        showDialog = false;
-        this.refs.projectTitle.value = '';
-        this.showProjectTitle = true;
+      else {
+        var userId = firebase.auth().currentUser.uid;
+        if(userId != null) {
+          if(!userProjectCollection){
+            throw new Error('Error creating userProjectCollection');
+          }
+          var projectData = {
+            Project_Name : this.inputProjectTitle,
+          };
+          var db = firebase.firestore();
+          var userProjectCollection = db.doc('Users/' + userId).collection('Projects');
+          userProjectCollection.add(projectData);
+
+          showDialog = false;
+          this.refs.projectTitle.value = '';
+          this.showProjectTitle = true;
+        }
+        else{
+          throw new Error('User is not signed in - should not see create tag');
+        }
       }
     }
     </script>
+
 
 </create>
