@@ -47,6 +47,7 @@
       getMonsters().then((monsters) => {
         this.monsters = monsters;
         this.showDialog = true;
+        this.update();
       })
       .catch((error) => {
         throw new Error(error.message)
