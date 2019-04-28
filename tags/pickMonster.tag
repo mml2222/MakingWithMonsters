@@ -8,7 +8,7 @@
 	<div class="row" >
 		<form method="get">
 		<div class="form-group">
-      <div each={ monsterItem in monsterList }>
+      <div each={ monsterItem, i in myMonsters }>
         <div class="col-md-3">
           <label class="btn btn-info">
             <img src={ monsterItem.img } alt= { monsterItem.name } class="img-thumbnail img-check">
@@ -32,19 +32,15 @@
     //     { img: "https://cdn.theatlantic.com/assets/media/img/mt/2017/10/Pict1_Ursinia_calendulifolia/lead_720_405.jpg?mod=1533691909", name: 'monster2'},
     //     { img: "https://cdn.theatlantic.com/assets/media/img/mt/2017/10/Pict1_Ursinia_calendulifolia/lead_720_405.jpg?mod=1533691909", name: 'monster3'},
     // ];
-
-    var monsterRef = firebase.firestore().collection('Monster');
+    var that = this;
+    var monsterRef = firebase.firestore().collection('Monsters');
     this.myMonsters = [];
-    // myRef.get().then(function(snapshot) {
-    // // handler code to be executed after data is retrieved
-    // // snapshot represents a view of the collection at
-    // // a certain point in time
-    //
-    // });
 
-
+    //read monster assets from database
     monsterRef.onSnapshot(function(snapshot){
       var posts = [];
+
+      console.log("monsters doc");
 
       snapshot.forEach(function(doc) {
         posts.push(doc.data());
