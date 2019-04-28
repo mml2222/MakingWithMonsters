@@ -8,12 +8,10 @@
 	<div class="row" >
 		<form method="get">
 		<div class="form-group">
-      <div each={ monsterItem, i in myMonsters }>
-        <div class="col-md-3">
+      <div class="col-md-4" each={ monsterItem, i in myMonsters}>
           <label class="btn btn-info">
-            <img src={ monsterItem.img } alt= { monsterItem.name } class="img-thumbnail img-check">
-            <input type="checkbox" name="m1" id="m1" value="true" class="hidden" autocomplete="off">
-            <p>{ monsterItem.name }</p>
+            <img src={ monsterItem.img } alt={ monsterItem.name } class="img-thumbnail img-check {check: pick }" onclick={ parent.toggle }>
+            <input type="checkbox" name={ monsterItem.name } id={ monsterItem.id } class="hidden">
           </label>
         </div>
       </div>
@@ -28,7 +26,7 @@
   <script>
     // JAVASCRIPT
     // this.monsterList = [
-    //     { img: "https://cdn.theatlantic.com/assets/media/img/mt/2017/10/Pict1_Ursinia_calendulifolia/lead_720_405.jpg?mod=1533691909", name: 'monster1'},
+    //     { img: "assets/images/monsters/changeOneThingFull.png", name: 'monster1'},
     //     { img: "https://cdn.theatlantic.com/assets/media/img/mt/2017/10/Pict1_Ursinia_calendulifolia/lead_720_405.jpg?mod=1533691909", name: 'monster2'},
     //     { img: "https://cdn.theatlantic.com/assets/media/img/mt/2017/10/Pict1_Ursinia_calendulifolia/lead_720_405.jpg?mod=1533691909", name: 'monster3'},
     // ];
@@ -38,25 +36,44 @@
 
     //read monster assets from database
     monsterRef.onSnapshot(function(snapshot){
-      var posts = [];
-
-      console.log("monsters doc");
-
+      var monsters = [];
       snapshot.forEach(function(doc) {
-        posts.push(doc.data());
+        this.monster = true;
+        monsters.push(doc.data());
       })
-      that.myMonsters = posts;
+      that.myMonsters = monsters;
       that.update(); // We need to manually update
-      });
+    });
 
+    toggle(event) {
+      if (this.pick === false) {
+				this.pick = true;
+			} else {
+				this.pick = false;
+			}
+			// let item = event.item.myMonsters;
+			// item.pick = !item.pick;
+			// selectMonster(item.id);
+			// return true;
+		}
 
-    // Based of Birjitsinh code
-    // change state of image css
-    $(document).ready(function(e){
-    		$(".img-check").click(function(){
-				$(this).toggleClass("check");
+    selectMonster(){
+      // Based of Birjitsinh code
+      // change state of image css
+      this.pick = true;
+      //write on database
+
+    }
+    let stopListening;
+    this.on('mount', () => {
+			// DATABASE READ LIVE
+			stopListening = monsterRef.onSnapshot(snapshot => {
+				this.items = snapshot.docs.map(doc => doc.data());
+				this.update();
 			});
-	});
+		});
+
+
   </script>
 
   <style>
