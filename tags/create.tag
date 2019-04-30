@@ -12,6 +12,9 @@
   </div>
   <div show={showProjectTitle}>
     <h1> My Project: {inputProjectTitle} </h1>
+    <div if={ showPickMonsters }>
+      <pickMonster></pickMonster>
+    </div>
   </div>
 
   <script>
@@ -40,20 +43,27 @@
           if(!userProjectCollection){
             throw new Error('Error creating userProjectCollection');
           }
+          var curProjectId = userProjectCollection.doc();
           var projectData = {
-            Project_Name : this.inputProjectTitle,
+            projectName : this.inputProjectTitle,
           };
-          userProjectCollection.add(projectData);
+          curProjectId.set(projectData);
 
           showDialog = false;
           this.refs.projectTitle.value = '';
           this.showProjectTitle = true;
+          this.showPickMonsters = true;
+
+          // trigger to pass curProjectId
+          // observer.trigger('project:created', curProjectId);
         }
         else{
           throw new Error('User is not signed in - should not see create tag');
         }
       }
     }
+    //add lisiner to pass project id to pickMonster tag
+
     </script>
 
 
