@@ -51,11 +51,15 @@
       //adds selected monsters to array
       monstersId.push(event.item.monsterItem.id);
       console.log(monstersId);
-    } else {
+    }
+    else {
       event.item.monsterItem.pick = false;
       var currentMonster = event.item.monsterItem.id;
       var deleteIndex = monstersId.indexOf(currentMonster);
-      monstersId.splice(deleteIndex, 1);
+      //bug with the last two monsters they would delete others when trying to add them
+      if (monstersId.indexOf(currentMonster) != -1) {
+          monstersId.splice(deleteIndex, 1);
+      }
       //write in array base pick false
       //call function selectMonster --> else (delete)
       // selectMonster(event);
@@ -68,6 +72,7 @@
   });
 
   selectMonster(event) {
+    console.log("in selectMonster");
     // write final pick array to database
     // get curProjectId when project is created
     //refences
@@ -76,9 +81,11 @@
 		// let userPreditedMonsters = userRef.collection('PredictedMonsters');
     // let projectRef = userPreditedMonsters.doc(this.projectId);
 
-    let refPredictedMonsters = database.collection('UsersMonsters').doc(firebase.auth().currentUser.uid).collection('PredictedMonsters');//.doc(this.projectId);
+    let refPredictedMonsters = database.collection('UserMonsters').doc(firebase.auth().currentUser.uid).collection('PredictedMonsters').doc(this.projectId);
 
-    console.log(refPredictedMonsters);
+    //refPredictedMonsters.setValue(monstersId);
+    this.update();
+
     // console.log(this.projectRef); //doesn't work --> logs undefined
 
 
