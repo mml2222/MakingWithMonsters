@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-success">Next</button>
+      <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button>
     </form>
   </div>
 </div>
@@ -28,6 +28,9 @@
   let database = firebase.firestore()
   var monsterRef = database.collection('Monsters');
   this.myMonsters = [];
+  this.monstersId = []; // add id with database
+  //project id
+  this.projectId = "test";
 
   //read monster assets from database
   monsterRef.onSnapshot(function (snapshot) {
@@ -45,38 +48,51 @@
     // Based of Birjitsinh code change state of image css
     if (event.item.monsterItem.pick === false) {
       event.item.monsterItem.pick = true;
+      this.monstersId.push(event.item.monsterItem.id);
       //write in array base pick true
       //call function selectMonster
       // selectMonster(event);
     } else {
       event.item.monsterItem.pick = false;
+      var deleteIndex = this.monsterId.findIndex(event.item.monsterItem.id);
+
+      //find id and delete from array
+
+
       //write in array base pick false
       //call function selectMonster --> else (delete)
       // selectMonster(event);
     }
+    console.log(this.monstersId);
   }
 
+  observer.on('project:created', (curProject) => {
+    this.projectId = curProject;
+    this.update();
+  });
+
   selectMonster(event) {
-    //write final pick array to database
+    // write final pick array to database
     // get curProjectId when project is created
-    // observable.on('project:created', (curProjectId) => {
-    //   console.log(curProjectId);
-    //   let projectId = curProjectId;
-    // });
+    //refences
+		// let collectionRef = database.collection('UsersMonsters');
+		// let userRef = collectionRef.doc(firebase.auth().currentUser.uid);
+		// let userPreditedMonsters = userRef.collection('PredictedMonsters');
+    // let projectRef = userPreditedMonsters.doc(this.projectId);
 
-    // DATABASE WRITE - Preparation
-				let collectionRef = database.collection('UsersMonsters');
-				let userRef = collectionRef.doc(firebase.auth().currentUser.uid);
-				let userPreditedMonsters = userRef.collection(projectId);
+    let refPredictedMonsters = database.collection('UsersMonsters').doc(firebase.auth().currentUser.uid).collection('PredictedMonsters');//.doc(this.projectId);
+
+    console.log(refPredictedMonsters);
+    // console.log(this.projectRef); //doesn't work --> logs undefined
 
 
-    if(event.item.monsterItem.pick === true){
-      collectionRef.doc(id).set({
-
-      });
-    } else {
-
-    }
+    // if(event.item.monsterItem.pick === true){
+    //   collectionRef.doc(id).set({
+    //
+    //   });
+    // } else {
+    //
+    // }
   }
   let stopListening;
   this.on('mount', () => {
