@@ -28,7 +28,7 @@
   let database = firebase.firestore()
   var monsterRef = database.collection('Monsters');
   this.myMonsters = [];
-  this.monstersId = []; // add id with database
+  var monstersId = []; // add id with database
   //project id
   this.projectId = "test";
 
@@ -48,24 +48,20 @@
     // Based of Birjitsinh code change state of image css
     if (event.item.monsterItem.pick === false) {
       event.item.monsterItem.pick = true;
-      this.monstersId.push(event.item.monsterItem.id);
-      //write in array base pick true
-      //call function selectMonster
-      // selectMonster(event);
+      //adds selected monsters to array
+      monstersId.push(event.item.monsterItem.id);
+      console.log(monstersId);
     } else {
       event.item.monsterItem.pick = false;
-      var deleteIndex = this.monsterId.findIndex(event.item.monsterItem.id);
-
-      //find id and delete from array
-
-
+      var currentMonster = event.item.monsterItem.id;
+      var deleteIndex = monstersId.indexOf(currentMonster);
+      monstersId.splice(deleteIndex, 1);
       //write in array base pick false
       //call function selectMonster --> else (delete)
       // selectMonster(event);
     }
-    console.log(this.monstersId);
   }
-
+  // receives projectId
   observer.on('project:created', (curProject) => {
     this.projectId = curProject;
     this.update();
