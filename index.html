@@ -12,8 +12,8 @@
   <body>
 
     <!-- MOUNT POINT -->
-    <pickMonster></pickMonster>
-
+    <!-- <pickMonster></pickMonster> -->
+    <app></app>
     <!-- TAGS -->
     <script src="./tags/app.tag" type="riot/tag"></script>
     <script src="./tags/login.tag" type="riot/tag"></script>
@@ -31,6 +31,8 @@
       firebase.initializeApp(config);
       // INITIALIZE RIOT
       riot.mount('*');
+      //observable
+      let observer = riot.observable();
     </script>
 
   </body>
