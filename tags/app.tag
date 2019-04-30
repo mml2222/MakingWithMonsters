@@ -1,6 +1,5 @@
 <app>
   <!-- HTML -->
-  <div class={ foo } onclick={ bar }>{ myMsg }</div>
   <login></login>
   <script>
     // JAVASCRIPT
