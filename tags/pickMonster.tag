@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button>
+      <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button> <!-- need to add link to next page -->
     </form>
   </div>
 </div>
@@ -28,9 +28,7 @@
   let database = firebase.firestore()
   var monsterRef = database.collection('Monsters');
   this.myMonsters = [];
-  var monstersId = []; // add id with database
-  //project id
-  this.projectId = "test";
+  let refPredictedMonsters;
 
   //read monster assets from database
   monsterRef.onSnapshot(function (snapshot) {
@@ -40,71 +38,41 @@
       monsters.push(doc.data());
     })
     that.myMonsters = monsters;
-    that.update(); // We need to manually update
+    that.update();
   });
 
-
-  toggle(event) {
-    // Based of Birjitsinh code change state of image css
-    if (event.item.monsterItem.pick === false) {
-      event.item.monsterItem.pick = true;
-      //adds selected monsters to array
-      monstersId.push(event.item.monsterItem.id);
-      console.log(monstersId);
-    }
-    else {
-      event.item.monsterItem.pick = false;
-      var currentMonster = event.item.monsterItem.id;
-      var deleteIndex = monstersId.indexOf(currentMonster);
-      //bug with the last two monsters they would delete others when trying to add them
-      if (monstersId.indexOf(currentMonster) != -1) {
-          monstersId.splice(deleteIndex, 1);
-      }
-      //write in array base pick false
-      //call function selectMonster --> else (delete)
-      // selectMonster(event);
-    }
-  }
   // receives projectId
   observer.on('project:created', (curProject) => {
     this.projectId = curProject;
     this.update();
-  });
-
-  selectMonster(event) {
-    console.log("in selectMonster");
-    // write final pick array to database
-    // get curProjectId when project is created
-    //refences
-		// let collectionRef = database.collection('UsersMonsters');
-		// let userRef = collectionRef.doc(firebase.auth().currentUser.uid);
-		// let userPreditedMonsters = userRef.collection('PredictedMonsters');
-    // let projectRef = userPreditedMonsters.doc(this.projectId);
-
-    let refPredictedMonsters = database.collection('UserMonsters').doc(firebase.auth().currentUser.uid).collection('PredictedMonsters').doc(this.projectId);
-
-    //refPredictedMonsters.setValue(monstersId);
-    this.update();
-
-    // console.log(this.projectRef); //doesn't work --> logs undefined
-
-
-    // if(event.item.monsterItem.pick === true){
-    //   collectionRef.doc(id).set({
-    //
-    //   });
-    // } else {
-    //
-    // }
-  }
-  let stopListening;
-  this.on('mount', () => {
-    // DATABASE READ LIVE
-    stopListening = monsterRef.onSnapshot(snapshot => {
-      this.items = snapshot.docs.map(doc => doc.data());
-      this.update();
+    //adds to database the possible monsters
+    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    refPredictedMonsters.doc(this.projectId).set({//try to make it reading from the database
+      askExpert: false,
+      changeOneThing: false,
+      compareIt: false,
+      lookItUp: false,
+      playWith:false,
+      takeBreak:false,
+      talkFriend:false
     });
   });
+
+  toggle(event) {
+    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    let currentMonster = event.item.monsterItem.id;
+    console.log(currentMonster);
+    if (event.item.monsterItem.pick === false) {
+      event.item.monsterItem.pick = true;
+      //update database
+      refPredictedMonsters.doc(this.projectId).update({[currentMonster]: true});
+    }
+    else {
+        event.item.monsterItem.pick = false;
+        //update database
+        refPredictedMonsters.doc(this.projectId).update({[currentMonster]: false});
+    }
+  }
 </script>
 
 <style>
