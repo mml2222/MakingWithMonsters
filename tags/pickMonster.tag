@@ -6,21 +6,22 @@
   <!-- Based of Birjitsinh code -->
   <div class="container" show={showPickMonsters}>
     <h1 class="display-3 text-center">{ mainQuestion }</h1>
-    <div class="row">
       <form method="get">
         <div class="form-group">
-          <div class="col-md-4" each={ monsterItem, i in myMonsters}>
-            <label class="btn btn-info">
-              <img src={ monsterItem.img } alt={ monsterItem.name } class="img-thumbnail img-check { check: monsterItem.pick }" onclick={ parent.toggle }>
-              <input type="checkbox" name={ monsterItem.name } id={ monsterItem.id } class="hidden">
-            </label>
+          <div class="row">
+            <div class="col-md-4" each={ monsterItem, i in myMonsters}>
+              <label class="btn btn-info">
+                <img src={ monsterItem.img } alt={ monsterItem.name } class="img-thumbnail img-check { check: monsterItem.pick }" onclick={ parent.toggle }>
+                <input type="checkbox" name={ monsterItem.name } id={ monsterItem.id } class="hidden">
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button> <!-- need to add link to next page -->
           </div>
         </div>
-      </div>
-      <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button> <!-- need to add link to next page -->
-    </form>
+      </form>
   </div>
-</div>
 
 <script>
   // JAVASCRIPT
