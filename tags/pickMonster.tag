@@ -5,7 +5,7 @@
   <!-- HTML -->
   <!-- Based of Birjitsinh code -->
   <div class="container" show={showPickMonsters}>
-    <h1 class="display-3 text-center">What monsters might help you on your journey?</h1>
+    <h1 class="display-3 text-center">{ mainQuestion }</h1>
     <div class="row">
       <form method="get">
         <div class="form-group">
@@ -29,6 +29,8 @@
   var monsterRef = database.collection('Monsters');
   this.myMonsters = [];
   let refPredictedMonsters;
+  this.mainQuestion;
+  this.isNewProject;
 
   //read monster assets from database
   monsterRef.onSnapshot(function (snapshot) {
@@ -40,9 +42,31 @@
     that.update();
   });
 
+  // receives projectId, but this time it's from "Ask a Monster"
+  observer.on('project:askMonster', (curProject) => {
+    this.projectId = curProject;
+    this.mainQuestion = "Choose the Monster You Want To Work With:";
+    this.isNewProject = false;
+    this.showPickMonsters = true;
+    this.update();
+    //adds to database the possible monsters
+    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    refPredictedMonsters.doc(this.projectId).set({//try to make it reading from the database
+      askExpert: false,
+      changeOneThing: false,
+      compareIt: false,
+      lookItUp: false,
+      playWith:false,
+      takeBreak:false,
+      talkFriend:false
+    });
+  });
+
   // receives projectId
   observer.on('project:created', (curProject) => {
     this.projectId = curProject;
+    this.mainQuestion = "What monsters might help you on your journey?";
+    this.isNewProject = true;
     this.update();
     //adds to database the possible monsters
     refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
@@ -72,6 +96,14 @@
         refPredictedMonsters.doc(this.projectId).update({[currentMonster]: false});
     }
   }
+
+  selectMonster()
+  {
+    // trigger to pass curProjectId
+    this.showPickMonsters = false;
+    observer.trigger('project:inprogress', this.projectId);
+  }
+
 </script>
 
 <style>
