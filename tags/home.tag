@@ -2,7 +2,6 @@
   <!-- HTML -->
 
   <create></create>
-  <pickMonster></pickMonster>
 
   <script>
   </script>

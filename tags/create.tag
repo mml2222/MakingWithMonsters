@@ -13,11 +13,12 @@
   <div show={showProjectTitle}>
     <h1> My Project: {inputProjectTitle} </h1>
     <div show={ showPickMonsters }>
-      <pickMonster></pickMonster>
+      <pickMonster showPickMonsters={showPickMonsters}></pickMonster>
     </div>
   </div>
 
   <script>
+    this.showPickMonsters = false
     this.inputProjectTitle = null
     this.showProjectTitle = false
     this.db = firebase.firestore();

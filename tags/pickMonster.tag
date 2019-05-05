@@ -4,7 +4,7 @@
 
   <!-- HTML -->
   <!-- Based of Birjitsinh code -->
-  <div class="container">
+  <div class="container" show={showPickMonsters}>
     <h1 class="display-3 text-center">What monsters might help you on your journey?</h1>
     <div class="row">
       <form method="get">
