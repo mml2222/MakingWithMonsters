@@ -5,7 +5,6 @@
   <div show={ user }>
     <!-- if user signin shows them their homepage -->
     <home></home>
-    <create></create>
   </div>
   <script>
     // JAVASCRIPT
