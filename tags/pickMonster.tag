@@ -28,7 +28,7 @@
   let database = firebase.firestore()
   var monsterRef = database.collection('Monsters');
   this.myMonsters = [];
-  let refPredictedMonsters;
+  let refSelectedMonsters;
   this.mainQuestion;
   this.isNewProject;
 
@@ -42,26 +42,6 @@
     that.update();
   });
 
-  // receives projectId, but this time it's from "Ask a Monster"
-  observer.on('project:askMonster', (curProject) => {
-    this.projectId = curProject;
-    this.mainQuestion = "Choose the Monster You Want To Work With:";
-    this.isNewProject = false;
-    this.showPickMonsters = true;
-    this.update();
-    //adds to database the possible monsters
-    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
-    refPredictedMonsters.doc(this.projectId).set({//try to make it reading from the database
-      askExpert: false,
-      changeOneThing: false,
-      compareIt: false,
-      lookItUp: false,
-      playWith:false,
-      takeBreak:false,
-      talkFriend:false
-    });
-  });
-
   // receives projectId
   observer.on('project:created', (curProject) => {
     this.projectId = curProject;
@@ -69,8 +49,8 @@
     this.isNewProject = true;
     this.update();
     //adds to database the possible monsters
-    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
-    refPredictedMonsters.doc(this.projectId).set({//try to make it reading from the database
+    refSelectedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    refSelectedMonsters.doc(this.projectId).set({//try to make it reading from the database
       askExpert: false,
       changeOneThing: false,
       compareIt: false,
@@ -81,27 +61,77 @@
     });
   });
 
+  // receives projectId, but this time it's from "Ask a Monster"
+  observer.on('project:askMonster', (curProject) => {
+    this.projectId = curProject;
+    this.mainQuestion = "Choose the Monster You Want To Work With:";
+    this.isNewProject = false;
+    this.showPickMonsters = true;
+    //nothing selected to begin with
+    this.myMonsters.forEach(function (monster){
+      monster.pick = false;
+    });
+    this.update();
+    //creates new collection UsedMonsters for this Project
+    refSelectedMonsters = database.doc('UserMonsters/'
+      + firebase.auth().currentUser.uid).collection('UsedMonsters');
+    if(!refSelectedMonsters){
+      throw new Error('Error creating UsedMonsters entry');
+    }
+  });
+
+
+
   toggle(event) {
-    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
     let currentMonster = event.item.monsterItem.id;
-    console.log(currentMonster);
-    if (event.item.monsterItem.pick === false) {
+
+    // if they're selecting a monster to help them,
+    // they should only be allowed to choose 1
+    if(this.isNewProject === false){
+      this.myMonsters.forEach(function (monster){
+        monster.pick = false;
+      });
+    }
+    if (!event.item.monsterItem.pick || event.item.monsterItem.pick === false) {
       event.item.monsterItem.pick = true;
-      //update database
-      refPredictedMonsters.doc(this.projectId).update({[currentMonster]: true});
+      //update database: TODO: only update db when they click "Next"
+      if(this.isNewProject){
+        refSelectedMonsters.doc(this.projectId).update({[currentMonster]: true});
+      }
     }
     else {
         event.item.monsterItem.pick = false;
-        //update database
-        refPredictedMonsters.doc(this.projectId).update({[currentMonster]: false});
+        //update database: TODO: only update db when they click "Next"
+        if(this.isNewProject){
+          refSelectedMonsters.doc(this.projectId).update({[currentMonster]: false});
+        }
     }
+    this.update();
   }
 
   selectMonster()
   {
-    // trigger to pass curProjectId
+    if(this.isNewProject){
+      // TODO: save to database here (instead of in toggle)
+      // project is now in progress
+      observer.trigger('project:inprogress', this.projectId);
+    }
+    else{
+      if(this.myMonsters){
+        // save selected monster to database
+        this.myMonsters.forEach((monster) => {
+          if(monster.pick){
+            var date = new Date();
+            var timestring = date.getTime();
+            //Paths must not contain '~', '*', '/', '[', or ']'
+            refSelectedMonsters.doc(this.projectId).set({[monster.id]:  timestring});
+          }
+        });
+      }
+      // project was already in progress, now in monster help mode
+      observer.trigger('project:monsterhelp', this.projectId);
+    }
     this.showPickMonsters = false;
-    observer.trigger('project:inprogress', this.projectId);
   }
 
 </script>
