@@ -52,7 +52,6 @@
             projectId: curProjectId.id
           };
           curProjectId.set(projectData);
-          console.log(curProjectId.id);
 
           // trigger to pass curProjectId
           observer.trigger('project:created', curProjectId.id);
