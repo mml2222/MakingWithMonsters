@@ -68,7 +68,6 @@
         }
       }
     }
-    //add lisiner to pass project id to pickMonster tag
 
     </script>
 
