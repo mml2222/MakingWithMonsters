@@ -12,12 +12,16 @@
   </div>
   <div show={showProjectTitle}>
     <h1> My Project: {inputProjectTitle} </h1>
+    <div show={ showPickMonsters }>
+      <pickMonster></pickMonster>
+    </div>
   </div>
 
   <script>
     this.inputProjectTitle = null
     this.showProjectTitle = false
     this.db = firebase.firestore();
+    var curProjectId;
 
     startNewProject(){
       showDialog = true
@@ -40,20 +44,31 @@
           if(!userProjectCollection){
             throw new Error('Error creating userProjectCollection');
           }
+          curProjectId = userProjectCollection.doc();
+
           var projectData = {
-            Project_Name : this.inputProjectTitle,
+            projectName : this.inputProjectTitle,
+            projectId: curProjectId.id
           };
-          userProjectCollection.add(projectData);
+          curProjectId.set(projectData);
+          console.log(curProjectId.id);
+
+          // trigger to pass curProjectId
+          observer.trigger('project:created', curProjectId.id);
 
           showDialog = false;
           this.refs.projectTitle.value = '';
           this.showProjectTitle = true;
+          this.showPickMonsters = true;
+
+
         }
         else{
           throw new Error('User is not signed in - should not see create tag');
         }
       }
     }
+
     </script>
 
 
