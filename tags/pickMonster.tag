@@ -34,7 +34,6 @@
   monsterRef.onSnapshot(function (snapshot) {
     var monsters = [];
     snapshot.forEach(function (doc) {
-      this.monster = true;
       monsters.push(doc.data());
     })
     that.myMonsters = monsters;
