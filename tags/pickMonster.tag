@@ -1,92 +1,91 @@
-<pickMonster>
+<pickmonster>
+  <!-- the image select check is based of Birjitsinh-->
+  <!-- code found in https://bootsnipp.com/snippets/Zl6ql -->
+
   <!-- HTML -->
-  <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" onclick={ showPickDialog }>Pick Monster</button>
-  <div show={ showDialog } style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 99999999; background-color: rgba(0,0,0,.2);">
-    <form style="width: 500px; margin: 200px auto; background-color: white ">
-      <h1>Choose the monster you want to work with:</h1>
-      <br>
-      <div each="{ monster in monsters }">
-        <input type="checkbox" id="imageCheckbox" ref="monsterSelected"
-          value={monster.id}> <img src={monster.imgUrl}/>
-        </input>
+  <!-- Based of Birjitsinh code -->
+  <div class="container">
+    <h1 class="display-3 text-center">What monsters might help you on your journey?</h1>
+    <div class="row">
+      <form method="get">
+        <div class="form-group">
+          <div class="col-md-4" each={ monsterItem, i in myMonsters}>
+            <label class="btn btn-info">
+              <img src={ monsterItem.img } alt={ monsterItem.name } class="img-thumbnail img-check { check: monsterItem.pick }" onclick={ parent.toggle }>
+              <input type="checkbox" name={ monsterItem.name } id={ monsterItem.id } class="hidden">
+            </label>
+          </div>
+        </div>
       </div>
-      <button onclick={pickMonster}>Next</button>
-      <button onclick={closeDialog}>Cancel</button>
+      <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button> <!-- need to add link to next page -->
     </form>
   </div>
-  <div show={showProjectTitle}>
-    <h1> My Project: {inputProjectTitle} </h1>
-  </div>
+</div>
 
-  <script>
-    this.showDialog = false
+<script>
+  // JAVASCRIPT
+  var that = this;
+  let database = firebase.firestore()
+  var monsterRef = database.collection('Monsters');
+  this.myMonsters = [];
+  let refPredictedMonsters;
 
-    async function getMonsters() {
-      var monsters = [];
-      try{
-        var dbMonsters = firebase.firestore().collection('Monsters');
-        var dbMonstersArray = await dbMonsters.get();
+  //read monster assets from database
+  monsterRef.onSnapshot(function (snapshot) {
+    var monsters = [];
+    snapshot.forEach(function (doc) {
+      monsters.push(doc.data());
+    })
+    that.myMonsters = monsters;
+    that.update();
+  });
 
-        dbMonstersArray.forEach(doc => {
-          var docData = doc.data();
-          var monster = {
-            "id":docData.id,
-            "imgUrl":docData.img,
-            "name":docData.name
-          }
-          monsters.push(monster);
-        });
-      }
-      catch(err){
-        throw new Error(err);
-      }
-      return monsters;
-    };
+  // receives projectId
+  observer.on('project:created', (curProject) => {
+    this.projectId = curProject;
+    this.update();
+    //adds to database the possible monsters
+    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    refPredictedMonsters.doc(this.projectId).set({//try to make it reading from the database
+      askExpert: false,
+      changeOneThing: false,
+      compareIt: false,
+      lookItUp: false,
+      playWith:false,
+      takeBreak:false,
+      talkFriend:false
+    });
+  });
 
-    showPickDialog(){
-      getMonsters().then((monsters) => {
-        this.monsters = monsters;
-        this.showDialog = true;
-        this.update();
-      })
-      .catch((error) => {
-        throw new Error(error.message)
-      });
+  toggle(event) {
+    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    let currentMonster = event.item.monsterItem.id;
+    console.log(currentMonster);
+    if (event.item.monsterItem.pick === false) {
+      event.item.monsterItem.pick = true;
+      //update database
+      refPredictedMonsters.doc(this.projectId).update({[currentMonster]: true});
     }
-    closeDialog(){
-      e.preventDefault()
-      showDialog = false
+    else {
+        event.item.monsterItem.pick = false;
+        //update database
+        refPredictedMonsters.doc(this.projectId).update({[currentMonster]: false});
     }
+  }
+</script>
 
-    getStarted(e){
-      e.preventDefault()
-      this.inputMonster = this.refs.monsterSelected.value
+<style>
+  /* CSS */
+  :scope {}
+  .special {
+    background-color: #333333;
+    color: #FFFFFF;
+  }
+  /* Based of Birjitsinh code */
+  .check {
+    opacity: 0.5;
+    color: #996;
 
-      if(!this.refs.monsterSelected){
-        alert("Don't forget to select a monster to help you!")
-      }
-      else {
-        var userId = firebase.auth().currentUser.uid;
-        if(userId != null) {
-          var userProjectCollection = this.db.doc('Users/' + userId).collection('Projects');
-          if(!userProjectCollection){
-            throw new Error('Error creating userProjectCollection');
-          }
-          var projectData = {
-            Project_Name : this.inputProjectTitle,
-          };
-          userProjectCollection.add(projectData);
-
-          this.showDialog = false;
-          this.refs.projectTitle.value = '';
-          this.showProjectTitle = true;
-        }
-        else{
-          throw new Error('User is not signed in - should not see create tag');
-        }
-      }
-    }
-    </script>
-
-
-</pickMonster>
+  }
+</style>
+</pickmonster>
