@@ -17,6 +17,7 @@
             </div>
           </div>
           <div class="row">
+            <button type="button" class="btn btn-success"  show={!isNewProject} onclick={closeDialog}>Cancel</button>
             <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button> <!-- need to add link to next page -->
           </div>
         </div>
@@ -108,6 +109,12 @@
         }
     }
     this.update();
+  }
+
+  closeDialog(){
+    this.showPickMonsters = false;
+    // project is back to in progress
+    observer.trigger('project:inprogress', this.projectId);
   }
 
   selectMonster()
