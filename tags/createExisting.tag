@@ -1,4 +1,4 @@
-<finalReflection>
+<createexisting>
   <!-- HTML -->
   <button class="btn btn-success" data-toggle="modal" data-target="#startNewProject">Start New Project</button>
 
@@ -10,7 +10,7 @@
           <div class="row justify-content-center">
             <form method="get">
               <div class="form-group">
-                <div class="col-md-2 form-check" each={ emotionItem in myEmotions}>
+                <div class="col-md-2 form-check" each={ emotionItem, i in myEmotions}>
                   <label class="btn btn-info">
                     <img src={ emotionItem.img } class="img-thumbnail img-check  { check: emotionItem.pick }" onclick={ parent.toggle }>
                     <input type="radio" name={ emotionItem.id } id={ emotionItem.id } class="hidden">
@@ -20,7 +20,7 @@
             </form>
           </div>
           <br>
-          <div>
+          <div class="">
             <h1>Which monster moment was the most helpful?</h1>
               <!-- add monsters they used -->
           </div>
@@ -72,7 +72,7 @@
     // receives projectId
     observer.on('project:created', (curProject) => {
       this.projectId = curProject;
-      this.isNewProject = false;
+
       this.update();
     });
 
@@ -81,32 +81,18 @@
       let userId = firebase.auth().currentUser.uid;
       refPickedEmotion = database.doc('Users/' + userId).collection('Projects');
       let pickedEmotion = event.item.emotionItem.id;
-      console.log(event.item.emotionItem.pick);
       console.log(pickedEmotion);
-      // they should only be allowed to choose 1
-      if(this.isNewProject === false){
-        this.myEmotions.forEach(function (emotion){
-          emotion.pick = false;
-        });
-      }
-      if (!event.item.emotionItem.pick || event.item.emotionItem.pick === false) {
+      if (event.item.emotionItem.pick === false) {
         event.item.emotionItem.pick = true;
-        console.log("luego "+event.item.emotionItem.pick);
+        //update database
 
         refPickedEmotion.doc(this.projectId).update({emotion: pickedEmotion});
       }
-      else {
-          event.item.monsterItem.pick = false;
-          //update database: TODO: only update db when they click "Next"
-          if(this.isNewProject){
-            //todo delete this emotion
-            refSelectedMonsters.doc(this.projectId).update({[currentMonster]: false});
-          }
-      }
     }
-    // getPickMonsters(){
-    //   mode++;
-    // }
+    getPickMonsters(){
+      //call 
+      observer.trigger('project:monsterhelp', );
+    }
 
   </script>
 
@@ -117,10 +103,5 @@
       background-color: #333333;
       color: #FFFFFF;
     }
-    .check {
-      opacity: 0.5;
-      color: #996;
-
-    }
   </style>
-</finalReflection>
+</createexisting>

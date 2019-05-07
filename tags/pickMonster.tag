@@ -6,6 +6,9 @@
 <div id="pickMonster" class="modal" data-backdrop="false" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
+      <div class="modal-header">
+        <h1> My Project: {inputProjectTitle} </h1>
+      </div>
       <div class="modal-body">
         <h1 class="display-3 text-center">{ mainQuestion }</h1>
         <!-- predict monsters tag is called -->
@@ -27,7 +30,7 @@
         </div>
       <!-- add monster moments -->
       <div class="modal-footer">
-        <button class="btn btn-danger" show={!isNewProject} data-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button>
       </div>
     </div>
@@ -41,7 +44,7 @@
   let database = firebase.firestore()
   var monsterRef = database.collection('Monsters');
   this.myMonsters = [];
-  let refSelectedMonsters;
+  let refPredictedMonsters;
   this.mainQuestion;
   this.isNewProject;
 
@@ -62,8 +65,8 @@
     this.isNewProject = true;
     this.update();
     //adds to database the possible monsters
-    refSelectedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
-    refSelectedMonsters.doc(this.projectId).set({//try to make it reading from the database
+    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    refPredictedMonsters.doc(this.projectId).set({//try to make it reading from the database
       askExpert: false,
       changeOneThing: false,
       compareIt: false,
@@ -85,7 +88,8 @@
       });
       this.update();
       //creates new collection MonsterMoments for this Project
-      refSelectedMonsters = database.doc('UserMonsters/'+ firebase.auth().currentUser.uid).collection('MonsterMoments');
+      refSelectedMonsters = database.doc('UserMonsters/'
+        + firebase.auth().currentUser.uid).collection('MonsterMoments');
       if(!refSelectedMonsters){
         throw new Error('Error creating MonsterMoments entry');
       }
@@ -93,6 +97,7 @@
 
     toggle(event) {
       let currentMonster = event.item.monsterItem.id;
+
       // if they're selecting a monster to help them,
       // they should only be allowed to choose 1
       if(this.isNewProject === false){
@@ -116,17 +121,8 @@
       }
       this.update();
     }
-    //get mode
-    observer.on('project:mode', (mode) => {
-      console.log("what has been passed "+mode);
-      this.mode = mode;
-      console.log("in trigger "+this.mode);
-      this.update();
-    });
-    selectMonster(){
-      this.mode++;
-      // trigger to pass mode
-      observer.trigger('project:mode', this.mode);
+    selectMonster()
+    {
       if(this.isNewProject){
         // Todo: save to database here (instead of in toggle)
         // project is now in progress
