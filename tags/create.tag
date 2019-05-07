@@ -19,21 +19,6 @@
     </div>
 
   </div>
-
-  <div show={ showPickMonsters } id="PredictMonsters">
-    <pickmonster></pickmonster>
-  </div>
-
-  <!-- <div show={ showProjectTitle } style="top: 0; right: 0; bottom: 0; left: 0; z-index: 99999999; background-color: rgba(0,0,0,.2);">
-    <form style="width: 1050px; margin: 5px auto; background-color: white ">
-      <h1> My Project: {inputProjectTitle} </h1>
-      <!-- predict monsters tag is called -->
-    <!--  <div show={ showPickMonsters }>
-        <pickMonster></pickMonster>
-      </div>
-    </form>
-  </div> -->
-
   <script>
     this.inputProjectTitle = null
     this.showProjectTitle = false
@@ -48,6 +33,14 @@
       showDialog = false
     }
 
+    //get mode
+    observer.on('project:mode', (mode) => {
+      console.log("what has been passed "+mode);
+      this.mode = mode;
+      console.log("in trigger "+this.mode);
+      this.update();
+    });
+
     getStarted(e){
       e.preventDefault()
       this.inputProjectTitle = this.refs.projectTitle.value
@@ -56,6 +49,10 @@
       }
       else {
         var userId = firebase.auth().currentUser.uid;
+        this.mode++;
+        // trigger to pass mode
+        observer.trigger('project:mode', this.mode);
+        console.log("after get started clicked "+this.mode);
         if(userId != null) {
           var userProjectCollection = this.db.doc('Users/' + userId).collection('Projects');
           if(!userProjectCollection){
@@ -68,7 +65,6 @@
             projectId: curProjectId.id
           };
           curProjectId.set(projectData);
-          console.log(curProjectId.id);
 
           // trigger to pass curProjectId
           observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
