@@ -4,7 +4,7 @@
 
   <!-- HTML -->
   <!-- Based of Birjitsinh code -->
-  <div class="container" show={showPickMonsters}>
+  <div class="container">
     <h1 class="display-3 text-center">{ mainQuestion }</h1>
       <form method="get">
         <div class="form-group">
@@ -18,7 +18,7 @@
           </div>
           <div class="row">
             <button type="button" class="btn btn-success"  show={!isNewProject} onclick={closeDialog}>Cancel</button>
-            <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button> <!-- need to add link to next page -->
+            <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button>
           </div>
         </div>
       </form>
@@ -68,7 +68,6 @@
     this.projectId = curProject;
     this.mainQuestion = "Choose the Monster You Want To Work With:";
     this.isNewProject = false;
-    this.showPickMonsters = true;
     //nothing selected to begin with
     this.myMonsters.forEach(function (monster){
       monster.pick = false;
@@ -112,7 +111,6 @@
   }
 
   closeDialog(){
-    this.showPickMonsters = false;
     // project is back to in progress
     observer.trigger('project:inprogress', this.projectId);
   }
@@ -139,7 +137,6 @@
       // project was already in progress, now in monster help mode
       observer.trigger('project:monsterhelp', this.projectId);
     }
-    this.showPickMonsters = false;
   }
 
 </script>

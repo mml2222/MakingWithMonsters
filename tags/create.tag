@@ -10,15 +10,8 @@
       <button onclick={closeDialog}>Cancel</button>
     </form>
   </div>
-  <div show={showProjectTitle}>
-    <h1> My Project: {inputProjectTitle} </h1>
-    <div show={ showPickMonsters }>
-      <pickMonster showPickMonsters={showPickMonsters}></pickMonster>
-    </div>
-  </div>
 
   <script>
-    this.showPickMonsters = false
     this.inputProjectTitle = null
     this.showProjectTitle = false
     this.db = firebase.firestore();
@@ -54,13 +47,11 @@
           curProjectId.set(projectData);
 
           // trigger to pass curProjectId
-          observer.trigger('project:created', curProjectId.id);
+          observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
 
           showDialog = false;
           this.refs.projectTitle.value = '';
           this.showProjectTitle = true;
-          this.showPickMonsters = true;
-
 
         }
         else{
