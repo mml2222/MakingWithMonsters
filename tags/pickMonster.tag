@@ -59,7 +59,7 @@
   });
 
   // receives projectId and name
-  observer.on('project:created', (curProject, inputProjectTitle) => {
+  observer.on('project:created', (curProject) => {
     this.projectId = curProject;
     this.mainQuestion = "What monsters might help you on your journey?";
     this.isNewProject = true;
@@ -124,7 +124,7 @@
     selectMonster()
     {
       if(this.isNewProject){
-        // TODO: save to database here (instead of in toggle)
+        // Todo: save to database here (instead of in toggle)
         // project is now in progress
         observer.trigger('project:inprogress', this.projectId);
       }

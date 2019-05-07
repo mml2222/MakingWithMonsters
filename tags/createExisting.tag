@@ -27,7 +27,7 @@
         </div>
         <!-- add monster moments -->
         <div class="modal-footer">
-          <button class="btn btn-success" onclick={ getStarted }>Get Started</button>
+          <button class="btn btn-success" data-toggle="modal" data-target="#pickMonster" onclick={getPickMonsters}>Get Started</button>
           <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
       </div>
@@ -89,10 +89,11 @@
         refPickedEmotion.doc(this.projectId).update({emotion: pickedEmotion});
       }
     }
-    //for Modal
-    $('#myModal').on('shown.bs.modal', function () {
-      $('#myInput').trigger('focus')
-    });
+    getPickMonsters(){
+      //call 
+      observer.trigger('project:monsterhelp', );
+    }
+
   </script>
 
   <style>

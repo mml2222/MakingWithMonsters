@@ -12,7 +12,7 @@
         </div>
         <!-- add monster moments -->
         <div class="modal-footer">
-          <button class="btn btn-success" data-toggle="modal" data-target="#PredictMonsters" onclick={ getStarted }>Get Started</button>
+          <button class="btn btn-success" onclick={ getStarted }>Get Started</button>
           <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
       </div>
@@ -71,9 +71,7 @@
           console.log(curProjectId.id);
 
           // trigger to pass curProjectId
-          observer.trigger('project:created', curProjectId.id);
-          //trigger to pass project name
-          observer.trigger('project:name', this.inputProjectTitle);
+          observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
 
           showDialog = false;
           this.refs.projectTitle.value = '';
