@@ -10,12 +10,6 @@
       <button onclick={closeDialog}>Cancel</button>
     </form>
   </div>
-  <div show={showProjectTitle}>
-    <h1> My Project: {inputProjectTitle} </h1>
-    <div show={ showPickMonsters }>
-      <pickMonster></pickMonster>
-    </div>
-  </div>
 
   <script>
     this.inputProjectTitle = null
@@ -51,16 +45,13 @@
             projectId: curProjectId.id
           };
           curProjectId.set(projectData);
-          console.log(curProjectId.id);
 
           // trigger to pass curProjectId
-          observer.trigger('project:created', curProjectId.id);
+          observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
 
           showDialog = false;
           this.refs.projectTitle.value = '';
           this.showProjectTitle = true;
-          this.showPickMonsters = true;
-
 
         }
         else{
