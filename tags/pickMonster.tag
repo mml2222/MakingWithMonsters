@@ -45,7 +45,7 @@
   });
 
   // receives projectId
-  observer.on('project:created', (curProject) => {
+  observer.on('project:created', (curProject, inputProjectTitle) => {
     this.projectId = curProject;
     this.mainQuestion = "What monsters might help you on your journey?";
     this.isNewProject = true;
