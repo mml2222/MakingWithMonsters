@@ -73,11 +73,11 @@
       monster.pick = false;
     });
     this.update();
-    //creates new collection UsedMonsters for this Project
+    //creates new collection MonsterMoments for this Project
     refSelectedMonsters = database.doc('UserMonsters/'
-      + firebase.auth().currentUser.uid).collection('UsedMonsters');
+      + firebase.auth().currentUser.uid).collection('MonsterMoments');
     if(!refSelectedMonsters){
-      throw new Error('Error creating UsedMonsters entry');
+      throw new Error('Error creating MonsterMoments entry');
     }
   });
 
