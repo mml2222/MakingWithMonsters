@@ -10,7 +10,7 @@
           <div class="row justify-content-center">
             <form method="get">
               <div class="form-group">
-                <div class="col-md-2 form-check" each={ emotionItem in myEmotions}>
+                <div class="col-md-2 form-check" each={ emotionItem, i in myEmotions}>
                   <label class="btn btn-info">
                     <img src={ emotionItem.img } class="img-thumbnail img-check  { check: emotionItem.pick }" onclick={ parent.toggle }>
                     <input type="radio" name={ emotionItem.id } id={ emotionItem.id } class="hidden">
@@ -20,14 +20,14 @@
             </form>
           </div>
           <br>
-          <div>
+          <div class="">
             <h1>Which monster moment was the most helpful?</h1>
               <!-- add monsters they used -->
           </div>
         </div>
         <!-- add monster moments -->
         <div class="modal-footer">
-          <button class="btn btn-success" data-toggle="modal" data-target="#pickMonster" onclick={getPickMonsters}>Get Started</button>
+          <button class="btn btn-success" data-toggle="modal" data-target="#pickMonster" onclick={ getStarted }>Get Started</button>
           <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
       </div>
@@ -104,10 +104,10 @@
           }
       }
     }
-    // getPickMonsters(){
-    //   mode++;
-    // }
-
+    //for Modal
+    $('#myModal').on('shown.bs.modal', function () {
+      $('#myInput').trigger('focus')
+    });
   </script>
 
   <style>

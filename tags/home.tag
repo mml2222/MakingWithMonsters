@@ -1,22 +1,27 @@
 <home>
   <!-- HTML -->
-  <create></create>
+  <!-- first time using the app -->
+  <div show={ !newProject }>
+      <create></create>
+  </div>
+
+  <!-- mount new project when existing -->
+  <div show={ !newProject }>
+    <createExisting></createExisting>
+  </div>
+
   <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button"
     show={showAskMonster} onclick={ askMonster }>Ask a Monster for Help</button>
-  <div show={showProjectTitle}>
-    <h1> My Project: {inputProjectTitle} </h1>
-  </div>
-  <div show={ showPickMonsters }>
-    <pickMonster></pickMonster>
-  </div>
-  <!-- main homepage -->
+
   <div show={ mode == 2 }>
     <div show={ showProjectTitle }>
       <h1> My Project: {inputProjectTitle} </h1>
       <!-- todo: add path image -->
     </div>
     <finalReflection></finalReflection>
-    <pickMonster></pickMonster>
+    <div show={ showPickMonsters }>
+      <pickMonster></pickMonster>
+    </div>
   </div>
 
   <script>

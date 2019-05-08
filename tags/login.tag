@@ -6,17 +6,6 @@
     <!-- if user signin shows them their homepage -->
     <home></home>
 
-    <!-- todo: MOVE TO HOME -->
-    <!-- first time using the app -->
-    <div show={ !newProject }>
-        <create></create>
-    </div>
-
-    <!-- mount new project when existing -->
-    <div show={ !newProject }>
-      <createExisting></createExisting>
-    </div>
-
   </div>
   <script>
     // JAVASCRIPT

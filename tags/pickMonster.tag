@@ -26,7 +26,6 @@
         </div>
       <!-- add monster moments -->
       <div class="modal-footer">
-        <button class="btn btn-danger" show={!isNewProject} data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button>
         <button class="btn btn-danger" data-dismiss="modal" show={!isNewProject}>Cancel</button>
       </div>
