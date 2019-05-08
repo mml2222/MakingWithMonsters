@@ -13,15 +13,11 @@
         <!-- add monster moments -->
         <div class="modal-footer">
           <button class="btn btn-success" data-toggle="modal" data-target="#PredictMonsters" onclick={ getStarted }>Get Started</button>
-          <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger" data-dismiss="modal" onclick={closeDialog}>Cancel</button>
         </div>
       </div>
     </div>
 
-  </div>
-
-  <div show={ showPickMonsters } id="PredictMonsters">
-    <pickmonster></pickmonster>
   </div>
 
   <!-- <div show={ showProjectTitle } style="top: 0; right: 0; bottom: 0; left: 0; z-index: 99999999; background-color: rgba(0,0,0,.2);">
@@ -68,17 +64,16 @@
             projectId: curProjectId.id
           };
           curProjectId.set(projectData);
-          console.log(curProjectId.id);
 
           // trigger to pass curProjectId
-          observer.trigger('project:created', curProjectId.id);
+
+          observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
           //trigger to pass project name
           observer.trigger('project:name', this.inputProjectTitle);
 
           showDialog = false;
           this.refs.projectTitle.value = '';
           this.showProjectTitle = true;
-          this.showPickMonsters = true;
         }
         else{
           throw new Error('User is not signed in - should not see create tag');

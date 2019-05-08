@@ -2,33 +2,11 @@
   <!-- the image select check is based of Birjitsinh-->
   <!-- code found in https://bootsnipp.com/snippets/Zl6ql -->
   <!-- HTML -->
-  
-  <!-- <div class="container">
-    <h1 class="display-3 text-center">What monsters might help you on your journey?</h1>
-    <div class="row">
-      <form method="get">
-        <div class="form-group">
-          <div class="col-md-2" each={ monsterItem, i in myMonsters}>
-            <label class="btn btn-info">
-              <img src={ monsterItem.img } alt={ monsterItem.name } class="img-thumbnail img-check { check: monsterItem.pick }" onclick={ parent.toggle }>
-              <input type="checkbox" name={ monsterItem.name } id={ monsterItem.id } class="hidden">
-            </label>
-          </div>
-        </div>
-      </div>
-      <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button> <!-- need to add link to next page -->
-  <!--  </form>
-  </div>
-</div> -->
-<button class="btn btn-success" data-toggle="modal" data-target="#pickMonster">Pick Monster</button>
 <div id="pickMonster" class="modal" data-backdrop="false" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h1> My Project: {inputProjectTitle} </h1>
-      </div>
       <div class="modal-body">
-        <h1 class="display-3 text-center">What monsters might help you on your journey?</h1>
+        <h1 class="display-3 text-center">{ mainQuestion }</h1>
         <!-- predict monsters tag is called -->
           <div class="container-fluid">
             <div class="row">
@@ -49,11 +27,10 @@
       <!-- add monster moments -->
       <div class="modal-footer">
         <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button>
-        <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" data-dismiss="modal" show={!isNewProject}>Cancel</button>
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
@@ -62,7 +39,9 @@
   let database = firebase.firestore()
   var monsterRef = database.collection('Monsters');
   this.myMonsters = [];
-  let refPredictedMonsters;
+  let refSelectedMonsters;
+  this.mainQuestion;
+  this.isNewProject;
 
   //read monster assets from database
   monsterRef.onSnapshot(function (snapshot) {
@@ -75,12 +54,14 @@
   });
 
   // receives projectId
-  observer.on('project:created', (curProject) => {
+  observer.on('project:created', (curProject, inputProjectTitle) => {
     this.projectId = curProject;
+    this.mainQuestion = "What monsters might help you on your journey?";
+    this.isNewProject = true;
     this.update();
     //adds to database the possible monsters
-    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
-    refPredictedMonsters.doc(this.projectId).set({//try to make it reading from the database
+    refSelectedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
+    refSelectedMonsters.doc(this.projectId).set({//try to make it reading from the database
       askExpert: false,
       changeOneThing: false,
       compareIt: false,
@@ -96,21 +77,82 @@
     this.update();
   });
 
+  // receives projectId, but this time it's from "Ask a Monster"
+  observer.on('project:askMonster', (curProject) => {
+    this.projectId = curProject;
+    this.mainQuestion = "Choose the Monster You Want To Work With:";
+    this.isNewProject = false;
+    //nothing selected to begin with
+    this.myMonsters.forEach(function (monster){
+      monster.pick = false;
+    });
+    this.update();
+    //creates new collection MonsterMoments for this Project
+    refSelectedMonsters = database.doc('UserMonsters/'
+      + firebase.auth().currentUser.uid).collection('MonsterMoments');
+    if(!refSelectedMonsters){
+      throw new Error('Error creating MonsterMoments entry');
+    }
+  });
+
+
+
   toggle(event) {
-    refPredictedMonsters = database.doc('UserMonsters/' + firebase.auth().currentUser.uid).collection('PredictedMonsters');
     let currentMonster = event.item.monsterItem.id;
-    console.log(currentMonster);
-    if (event.item.monsterItem.pick === false) {
+
+    // if they're selecting a monster to help them,
+    // they should only be allowed to choose 1
+    if(this.isNewProject === false){
+      this.myMonsters.forEach(function (monster){
+        monster.pick = false;
+      });
+    }
+    if (!event.item.monsterItem.pick || event.item.monsterItem.pick === false) {
       event.item.monsterItem.pick = true;
-      //update database
-      refPredictedMonsters.doc(this.projectId).update({[currentMonster]: true});
+      //update database: TODO: only update db when they click "Next"
+      if(this.isNewProject){
+        refSelectedMonsters.doc(this.projectId).update({[currentMonster]: true});
+      }
     }
     else {
         event.item.monsterItem.pick = false;
-        //update database
-        refPredictedMonsters.doc(this.projectId).update({[currentMonster]: false});
+        //update database: TODO: only update db when they click "Next"
+        if(this.isNewProject){
+          refSelectedMonsters.doc(this.projectId).update({[currentMonster]: false});
+        }
+    }
+    this.update();
+  }
+
+  closeDialog(){
+    // project is back to in progress
+    observer.trigger('project:inprogress', this.projectId);
+  }
+
+  selectMonster()
+  {
+    if(this.isNewProject){
+      // TODO: save to database here (instead of in toggle)
+      // project is now in progress
+      observer.trigger('project:inprogress', this.projectId);
+    }
+    else{
+      if(this.myMonsters){
+        // save selected monster to database
+        this.myMonsters.forEach((monster) => {
+          if(monster.pick){
+            var date = new Date();
+            var timestring = date.getTime();
+            //Paths must not contain '~', '*', '/', '[', or ']'
+            refSelectedMonsters.doc(this.projectId).set({[monster.id]:  timestring});
+          }
+        });
+      }
+      // project was already in progress, now in monster help mode
+      observer.trigger('project:monsterhelp', this.projectId);
     }
   }
+
 </script>
 
 <style>
