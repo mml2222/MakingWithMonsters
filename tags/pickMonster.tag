@@ -26,6 +26,7 @@
         </div>
       <!-- add monster moments -->
       <div class="modal-footer">
+        <button class="btn btn-danger" show={!isNewProject} data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-success" onclick={ selectMonster }>Next</button>
         <button class="btn btn-danger" data-dismiss="modal" show={!isNewProject}>Cancel</button>
       </div>
@@ -151,7 +152,38 @@
       // project was already in progress, now in monster help mode
       observer.trigger('project:monsterhelp', this.projectId);
     }
-  }
+    //get mode
+    observer.on('project:mode', (mode) => {
+      console.log("what has been passed "+mode);
+      this.mode = mode;
+      console.log("in trigger "+this.mode);
+      this.update();
+    });
+    selectMonster(){
+      this.mode++;
+      // trigger to pass mode
+      observer.trigger('project:mode', this.mode);
+      if(this.isNewProject){
+        // Todo: save to database here (instead of in toggle)
+        // project is now in progress
+        observer.trigger('project:inprogress', this.projectId);
+      }
+      else{
+        if(this.myMonsters){
+          // save selected monster to database
+          this.myMonsters.forEach((monster) => {
+            if(monster.pick){
+              var date = new Date();
+              var timestring = date.getTime();
+              //Paths must not contain '~', '*', '/', '[', or ']'
+              refSelectedMonsters.doc(this.projectId).set({[monster.id]:  timestring});
+            }
+          });
+        }
+        // project was already in progress, now in monster help mode
+        observer.trigger('project:monsterhelp', this.projectId);
+      }
+    }
 
 </script>
 

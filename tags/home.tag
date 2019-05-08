@@ -9,6 +9,15 @@
   <div show={ showPickMonsters }>
     <pickMonster></pickMonster>
   </div>
+  <!-- main homepage -->
+  <div show={ mode == 2 }>
+    <div show={ showProjectTitle }>
+      <h1> My Project: {inputProjectTitle} </h1>
+      <!-- todo: add path image -->
+    </div>
+    <finalReflection></finalReflection>
+    <pickMonster></pickMonster>
+  </div>
 
   <script>
     this.showAskMonster = false;
@@ -35,7 +44,13 @@
       this.showAskMonster = false;
       observer.trigger('project:askMonster', this.projectId);
     };
-
+    // receives mode
+    observer.on('project:mode', (mode) => {
+      console.log("what has been passed " + mode);
+      this.mode = mode;
+      console.log("in trigger " + this.mode);
+      this.update();
+    });
   </script>
 
   <style>

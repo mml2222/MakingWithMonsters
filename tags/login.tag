@@ -35,7 +35,6 @@
       refUser.once("value").then(function(snapshot) {
         a = snapshot.exists();
       });
-      console.log(a);
 		}
 
     // Firebase authentication state listener
