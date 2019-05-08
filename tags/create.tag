@@ -1,6 +1,6 @@
 <create>
   <!-- HTML -->
-  <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ startNewProject }>Start Project</button>
+  <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ startNewProject }>Start New Project</button>
 
   <div id="startNewProject" class="modal" data-backdrop="false" role="dialog" aria-hidden="true" show={ showDialog }>
     <div class="modal-dialog" role="document">
@@ -26,33 +26,21 @@
     var curProjectId;
 
     startNewProject(){
-      showDialog = true
+      showDialog = true;
+      this.update();
     }
     closeDialog(){
-      e.preventDefault()
-      showDialog = false
+      showDialog = false;
+      this.update();
     }
 
-    //get mode
-    observer.on('project:mode', (mode) => {
-      console.log("what has been passed "+mode);
-      this.mode = mode;
-      console.log("in trigger "+this.mode);
-      this.update();
-    });
-
-    getStarted(e){
-      e.preventDefault()
+    getStarted(){
       this.inputProjectTitle = this.refs.projectTitle.value
       if(this.inputProjectTitle == ""){
         alert("Don't forget to answer the question 'What are you making today?'")
       }
       else {
         var userId = firebase.auth().currentUser.uid;
-        this.mode++;
-        // trigger to pass mode
-        observer.trigger('project:mode', this.mode);
-        console.log("after get started clicked "+this.mode);
         if(userId != null) {
           var userProjectCollection = this.db.doc('Users/' + userId).collection('Projects');
           if(!userProjectCollection){
@@ -69,8 +57,6 @@
           // trigger to pass curProjectId
 
           observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
-          //trigger to pass project name
-          observer.trigger('project:name', this.inputProjectTitle);
 
           showDialog = false;
           this.refs.projectTitle.value = '';

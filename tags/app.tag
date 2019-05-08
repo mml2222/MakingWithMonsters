@@ -6,7 +6,6 @@
   <script>
     // JAVASCRIPT
     let tag = this;
-    this.mode = 0;
 
     // need for login
 
@@ -17,9 +16,6 @@
         this.user = null;
       }
       this.update();
-      console.log(this.mode);
-      // trigger to pass mode
-      observer.trigger('project:mode', this.mode);
     });
 
   </script>

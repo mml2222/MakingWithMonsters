@@ -1,6 +1,5 @@
 <finalReflection>
   <!-- HTML -->
-  <button class="btn btn-success" data-toggle="modal" data-target="#startNewProject">Start New Project</button>
 
   <div id="startNewProject" class="modal" data-backdrop="false" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -70,7 +69,7 @@
     });
 
     // receives projectId
-    observer.on('project:created', (curProject) => {
+    observer.on('project:created', (curProject, projectName) => {
       this.projectId = curProject;
       this.isNewProject = false;
       this.update();
