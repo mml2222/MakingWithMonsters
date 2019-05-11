@@ -1,6 +1,7 @@
 <create>
   <!-- HTML -->
   <!-- button for first time using the app -->
+  <h1>create </h1>
   <div show={ firstProject }>
     <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ startNewProject }>Start a Project</button>
   </div>
@@ -64,7 +65,6 @@
           curProjectId.set(projectData);
 
           // trigger to pass curProjectId
-
           observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
           showDialog = false;
           this.refs.projectTitle.value = '';
@@ -75,24 +75,16 @@
         }
       }
     }
-
+    //
     observer.on('project:firstProject', (firstProject) => {
-      console.log(this.firstProject);
-      console.log("in observer firstProject");
       this.firstProject = true;
-      console.log(this.firstProject + " firstProject");
-      console.log(this.newProject + " newProject");
-
+      this.newProject = false;
       this.update();
     });
 
     observer.on('project:newProject', (newProject) => {
-      console.log("antes "+this.newProject);
-      console.log("in observer newProject");
-
       this.newProject = true;
-      console.log(this.firstProject + " firstProject");
-      console.log(this.newProject + " newProject");s
+      this.firstProject = false;
       this.update();
     });
     </script>

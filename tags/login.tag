@@ -12,8 +12,8 @@
     this.user;
     //set up database
     let database = firebase.firestore();
-    let firstProject = false;
-    let newProject = false;
+    this.firstProject = false;
+    this.newProject = false;
     // reference to current user
     let refUser;
     login() {
@@ -51,14 +51,14 @@
 		});
     // check if have Projects
     checkProject(){
-      this.projectCollection = database.collection('Users/').doc(this.user.uid).collection('Projects');
+      this.projectCollection = database.collection('Users/').doc(firebase.auth().currentUser.uid).collection('Projects');
       this.projectCollection.get().then((querySnapshot) => {
         if (querySnapshot.empty === true) {
-          firstProject = true;
+          this.firstProject = true;
           observer.trigger('project:firstProject', this.firstProject);
         }
         else {
-          newProject = true;
+          this.newProject = true;
           observer.trigger('project:newProject', this.newProject);
         }
       });

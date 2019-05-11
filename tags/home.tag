@@ -1,6 +1,6 @@
 <home>
   <!-- HTML -->
-  <h1>en home</h1>
+  <h1>home</h1>
   <!-- <create></create> <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" show={showAskMonster} onclick={ askMonster }>Ask a Monster for Help</button> <div show={showProjectTitle}> <h1> My Project: {inputProjectTitle} </h1>
   </div> <div show={ showPickMonsters }> <pickMonster></pickMonster> </div> -->
   <!-- 1st time using the app -->
