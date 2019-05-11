@@ -74,6 +74,8 @@
           };
           curProjectId.set(projectData);
 
+          // update current project to Users collection id document
+          firebase.firestore().collection('Users').doc(firebase.auth().currentUser.uid).update({curProjectId: curProjectId.id});
           // trigger to pass curProjectId
           observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
           showDialog = false;

@@ -10,7 +10,7 @@
           <div class="row justify-content-center">
             <form method="get">
               <div class="form-group">
-                <div class="col-md-2 form-check" each={ emotionItem in myEmotions}>
+                <div class="col-md-2" each={ emotionItem in myEmotions}>
                   <label class="btn btn-info">
                     <img src={ emotionItem.img } class="img-thumbnail img-check  { check: emotionItem.pick }" onclick={ parent.toggle }>
                     <input type="radio" name={ emotionItem.id } id={ emotionItem.id } class="hidden">
@@ -27,7 +27,7 @@
         </div>
         <!-- add monster moments -->
         <div class="modal-footer">
-          <button class="btn btn-success" data-toggle="modal" data-target="#pickMonster" onclick={getPickMonsters}>Get Started</button>
+          <button class="btn btn-success" data-toggle="modal" data-target="#startNewProject" onclick={getPickMonsters}>Get Started</button>
           <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
         </div>
       </div>
@@ -51,7 +51,7 @@
       showDialog = false
     }
 
-    //read
+    //read emotions from database
     emotionsRef.onSnapshot(function (snapshot) {
       var emotions = [];
       snapshot.forEach(function (doc) {
@@ -64,14 +64,16 @@
     // receives projectId
     observer.on('project:created', (curProject) => {
       this.projectId = curProject;
+      console.log("project Id "+this.projectId);
       this.isNewProject = false;
       this.update();
     });
 
     //pick emotions
     toggle(event) {
-      let userId = firebase.auth().currentUser.uid;
-      refPickedEmotion = database.doc('Users/' + userId).collection('Projects');
+    //  let userId = firebase.auth().currentUser.uid;
+      refPickedEmotion = database.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects');
+      console.log(database.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects'));
       let pickedEmotion = event.item.emotionItem.id;
       console.log(event.item.emotionItem.pick);
       console.log(pickedEmotion);
@@ -83,9 +85,7 @@
       }
       if (!event.item.emotionItem.pick || event.item.emotionItem.pick === false) {
         event.item.emotionItem.pick = true;
-        console.log("luego "+event.item.emotionItem.pick);
-
-        refPickedEmotion.doc(this.projectId).update({emotion: pickedEmotion});
+        refPickedEmotion.doc(this.projectId).update({finalEmotion: true});
       }
       else {
           event.item.monsterItem.pick = false;
