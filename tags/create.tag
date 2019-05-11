@@ -1,13 +1,16 @@
 <create>
   <!-- HTML -->
   <!-- button for first time using the app -->
-  <h1>create </h1>
   <div show={ firstProject }>
-    <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ startNewProject }>Start a Project</button>
+    <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ firstProject }>Start a Project</button>
   </div>
   <!-- button to start a new project -->
   <div show={ newProject }>
-    <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ startNewProject }>Start New Project</button>
+    <!-- <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ startNewProject }>Start New Project</button> -->
+    <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#finalReflection" show={ showStartNewProject } onclick={ startNewProject }>Start New Project</button>
+    <div show={ showFinalReflection }>
+      <finalReflection></finalReflection>
+    </div>
   </div>
   <!-- modal for start project -->
   <div id="startNewProject" class="modal" data-backdrop="false" role="dialog" aria-hidden="true" show={ showDialog }>
@@ -34,10 +37,17 @@
     this.projectCollection;
     this.firstProject = false;
     this.newProject = false;
+    this.showStartNewProject = true;
+    this.showFinalReflection = false;
     var curProjectId;
 
+    firstProject(){
+      showDialog = true;
+    }
     startNewProject(){
       showDialog = true;
+      this.showStartNewProject = false;
+      this.showFinalReflection = true;
     }
     closeDialog(){
       showDialog = false;
@@ -84,7 +94,7 @@
 
     observer.on('project:newProject', (newProject) => {
       this.newProject = true;
-      this.firstProject = false;
+      this.firstProject = false
       this.update();
     });
     </script>
