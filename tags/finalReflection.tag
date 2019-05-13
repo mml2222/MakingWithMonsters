@@ -64,7 +64,6 @@
     // receives projectId
     observer.on('project:created', (curProject) => {
       this.projectId = curProject;
-      console.log("project Id "+this.projectId);
       this.isNewProject = false;
       this.update();
     });
@@ -73,10 +72,7 @@
     toggle(event) {
     //  let userId = firebase.auth().currentUser.uid;
       refPickedEmotion = database.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects');
-      console.log(database.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects'));
       let pickedEmotion = event.item.emotionItem.id;
-      console.log(event.item.emotionItem.pick);
-      console.log(pickedEmotion);
       // they should only be allowed to choose 1
       if(this.isNewProject === false){
         this.myEmotions.forEach(function (emotion){

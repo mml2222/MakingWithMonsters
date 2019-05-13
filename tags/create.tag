@@ -73,14 +73,17 @@
             projectId: curProjectId.id
           };
           curProjectId.set(projectData);
-
           // update current project to Users collection id document
-          firebase.firestore().collection('Users').doc(firebase.auth().currentUser.uid).update({curProjectId: curProjectId.id});
+          // let refCurProjectId = this.db.doc('Users/' + userId);
+          // refCurProjectId.update({curProjectId: curProjectId.id});
+          this.db.doc('Users/' + userId).update({curProjectId: curProjectId.id});
           // trigger to pass curProjectId
           observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
           showDialog = false;
           this.refs.projectTitle.value = '';
           this.showProjectTitle = true;
+          this.newProject = true;
+          this.firstProject = false
         }
         else{
           throw new Error('User is not signed in - should not see create tag');
@@ -99,6 +102,21 @@
       this.firstProject = false
       this.update();
     });
+
+    // check if have Projects
+    checkProject(){
+      this.projectCollection = database.collection('Users/').doc(firebase.auth().currentUser.uid).collection('Projects');
+      this.projectCollection.get().then((querySnapshot) => {
+        if (querySnapshot.empty === true) {
+          this.firstProject = true;
+          observer.trigger('project:firstProject', this.firstProject);
+        }
+        else {
+          this.newProject = true;
+          observer.trigger('project:newProject', this.newProject);
+        }
+      });
+    }
     </script>
 
 

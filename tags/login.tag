@@ -34,8 +34,7 @@
             let userInfo = {
               id: firebase.auth().currentUser.uid,
               name: firebase.auth().currentUser.displayName,
-              email: firebase.auth().currentUser.email,
-              curProjectId: "pending"
+              email: firebase.auth().currentUser.email
             };
              database.collection('Users').doc(firebase.auth().currentUser.uid).set(userInfo);
              refUser = firebase.database().ref("Users/" + firebase.auth().currentUser.uid + '/Projects');
