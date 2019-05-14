@@ -77,7 +77,6 @@
     this.projectId = curProject;
     this.mainQuestion = "Choose the Monster You Want To Work With:";
     this.isNewProject = false;
-    //nothing selected to begin with
     this.myMonsters.forEach(function (monster){
       monster.pick = false;
     });

@@ -27,8 +27,8 @@
         </div>
         <!-- add monster moments -->
         <div class="modal-footer">
-          <button class="btn btn-success" data-toggle="modal" data-target="#startNewProject" onclick={getPickMonsters}>Get Started</button>
-          <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-success" data-toggle="modal" data-target="#startNewProject" onclick={ getPickMonsters }>Get Started</button>
+          <button class="btn btn-danger" data-dismiss="modal" show={} onclick={ closeDialog }>Cancel</button>
         </div>
       </div>
     </div>
@@ -64,6 +64,7 @@
     // receives projectId
     observer.on('project:created', (curProject) => {
       this.projectId = curProject;
+      console.log(curProject);
       this.isNewProject = false;
       this.update();
     });
@@ -81,7 +82,7 @@
       }
       if (!event.item.emotionItem.pick || event.item.emotionItem.pick === false) {
         event.item.emotionItem.pick = true;
-        refPickedEmotion.doc(this.projectId).update({finalEmotion:event.item.emotionItem.id });
+        refPickedEmotion.doc(this.projectId).update({finalEmotion: event.item.emotionItem.id});
       }
       else {
           event.item.monsterItem.pick = false;

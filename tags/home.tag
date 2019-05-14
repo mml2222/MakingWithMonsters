@@ -17,8 +17,10 @@
     this.inputProjectTitle;
     this.firstProject = false;
     this.newProject = false;
+    this.db = firebase.firestore();
 
     observer.on('project:created', (curProject, inputProjectTitle) => {
+      console.log('IN PROJECT:CREATED OBSERVER');
       this.showPickMonsters = true;
       this.showProjectTitle = true;
       this.inputProjectTitle = inputProjectTitle;
@@ -27,6 +29,7 @@
     });
     // receives projectId
     observer.on('project:inprogress', (curProjectId) => {
+      console.log('IN PROJECT:INPROGRESS OBSERVER');
       this.showPickMonsters = false;
       this.showAskMonster = true;
       this.projectId = curProjectId;
@@ -35,18 +38,39 @@
     });
 
     observer.on('project:newProject', (newProject) => {
+      console.log('IN PROJECT:newProject OBSERVER');
       this.newProject = true;
       this.firstProject = false;
       this.showAskMonster = true;
       this.showProjectTitle = true;
-      this.update();
-    });
 
+      refCurProject= this.db.doc('Users/' + firebase.auth().currentUser.uid);
+      refUserProject = this.db.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects');
+      refCurProject.onSnapshot(function (doc) {
+        let projectId = doc.data().curProjectId;
+        this.inputProjectTitle = doc.data().curProjectName;
+      });
+      this.update();
+  });
+    console.log();
     askMonster() {
       this.showPickMonsters = true;
       this.showAskMonster = true;
       observer.trigger('project:askMonster', this.projectId);
     }
+    //todo read project title
+    // refCurProjectId= this.db.doc('Users/' + firebase.auth().currentUser.uid);
+    // refUserProject = this.db.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects');
+    //
+    // refCurProjectId.get().then(function(doc) {
+    //   let projectId = doc.data().curProjectId;
+    //   console.log(projectId);
+    //   refCurProjectTitle = refUserProject.doc(projectId);
+    //   refCurProjectTitle.get().then(function(doc) {
+    //   this.projectName = doc.data().projectName;
+    //   console.log(this.projectName);
+    //   });
+    // });
   </script>
 
   <style>

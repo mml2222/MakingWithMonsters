@@ -65,6 +65,7 @@
         else {
           this.newProject = true;
           observer.trigger('project:newProject', this.newProject);
+
         }
       });
     }

@@ -24,7 +24,7 @@
         <!-- add monster moments -->
         <div class="modal-footer">
           <button class="btn btn-success" data-toggle="modal" data-target="#PredictMonsters" onclick={ getStarted }>Get Started</button>
-          <button class="btn btn-danger" data-dismiss="modal" onclick={closeDialog}>Cancel</button>
+          <button class="btn btn-danger" data-dismiss="modal" onclick={ closeDialog }>Cancel</button>
         </div>
       </div>
     </div>
@@ -55,6 +55,7 @@
     }
 
     getStarted(){
+      console.log("in get started");
       this.inputProjectTitle = this.refs.projectTitle.value
       if(this.inputProjectTitle == ""){
         alert("Don't forget to answer the question 'What are you making today?'")
@@ -74,11 +75,10 @@
           };
           curProjectId.set(projectData);
           // update current project to Users collection id document
-          // let refCurProjectId = this.db.doc('Users/' + userId);
-          // refCurProjectId.update({curProjectId: curProjectId.id});
-          this.db.doc('Users/' + userId).update({curProjectId: curProjectId.id});
+          this.db.doc('Users/' + userId).update({curProjectId: curProjectId.id, curProjectName: this.inputProjectTitle});
           // trigger to pass curProjectId
           observer.trigger('project:created', curProjectId.id, this.inputProjectTitle);
+
           showDialog = false;
           this.refs.projectTitle.value = '';
           this.showProjectTitle = true;
@@ -100,6 +100,7 @@
     observer.on('project:newProject', (newProject) => {
       this.newProject = true;
       this.firstProject = false
+      observer.trigger('project:inprogress', curProjectId);
       this.update();
     });
     </script>
