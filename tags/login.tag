@@ -1,7 +1,11 @@
 <login>
   <!-- HTML -->
-  <button show={ !user } class="btn btn-outline-success my-2 my-sm-0" type="button" onclick={ login }>Login</button>
-  <button show={ user } class="btn btn-outline-danger my-2 my-sm-0" type="button" onclick={ logout }>Logout</button>
+
+  <button show={ !user } class="btn btn-outline-success my-2 my-sm-0 float-right" type="button" onclick={ login }>Login</button>
+  <button show={ user } class="btn btn-outline-danger my-2 my-sm-0 float-right" type="button" onclick={ logout }>Logout</button>
+  <br><br>
+  <h1 class="display-3 text-center">Making with Monsters</h1>
+  <br><br>
   <div show={ user }>
     <!-- if user signin shows them their homepage -->
     <home></home>
