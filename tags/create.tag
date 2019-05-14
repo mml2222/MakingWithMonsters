@@ -102,21 +102,6 @@
       this.firstProject = false
       this.update();
     });
-
-    // check if have Projects
-    checkProject(){
-      this.projectCollection = database.collection('Users/').doc(firebase.auth().currentUser.uid).collection('Projects');
-      this.projectCollection.get().then((querySnapshot) => {
-        if (querySnapshot.empty === true) {
-          this.firstProject = true;
-          observer.trigger('project:firstProject', this.firstProject);
-        }
-        else {
-          this.newProject = true;
-          observer.trigger('project:newProject', this.newProject);
-        }
-      });
-    }
     </script>
 
 
