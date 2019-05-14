@@ -81,7 +81,7 @@
       }
       if (!event.item.emotionItem.pick || event.item.emotionItem.pick === false) {
         event.item.emotionItem.pick = true;
-        refPickedEmotion.doc(this.projectId).update({finalEmotion: true});
+        refPickedEmotion.doc(this.projectId).update({finalEmotion:event.item.emotionItem.id });
       }
       else {
           event.item.monsterItem.pick = false;
