@@ -2,10 +2,10 @@
   <!-- HTML -->
   <create></create>
   <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" show={ showAskMonster } onclick={ askMonster }>Ask a Monster for Help</button>
-  <!-- <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" onclick={ askMonster }>Ask a Monster for Help</button> -->
 
   <div show={showProjectTitle}>
     <h1> My Project: {inputProjectTitle} </h1>
+    <img src="assets/images/map/map.png">
   </div>
    <div show={ showPickMonsters }>
      <pickMonster></pickMonster>
@@ -30,14 +30,15 @@
       this.showPickMonsters = false;
       this.showAskMonster = true;
       this.projectId = curProjectId;
+      this.showProjectTitle = true;
       this.update();
-      console.log();
     });
 
     observer.on('project:newProject', (newProject) => {
       this.newProject = true;
       this.firstProject = false;
       this.showAskMonster = true;
+      this.showProjectTitle = true;
       this.update();
     });
 
