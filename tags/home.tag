@@ -1,7 +1,9 @@
 <home>
   <!-- HTML -->
   <create></create>
-  <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" show={showAskMonster} onclick={ askMonster }>Ask a Monster for Help</button>
+  <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" show={ showAskMonster } onclick={ askMonster }>Ask a Monster for Help</button>
+  <!-- <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" onclick={ askMonster }>Ask a Monster for Help</button> -->
+
   <div show={showProjectTitle}>
     <h1> My Project: {inputProjectTitle} </h1>
   </div>
@@ -29,11 +31,19 @@
       this.showAskMonster = true;
       this.projectId = curProjectId;
       this.update();
+      console.log();
+    });
+
+    observer.on('project:newProject', (newProject) => {
+      this.newProject = true;
+      this.firstProject = false;
+      this.showAskMonster = true;
+      this.update();
     });
 
     askMonster() {
       this.showPickMonsters = true;
-      this.showAskMonster = false;
+      this.showAskMonster = true;
       observer.trigger('project:askMonster', this.projectId);
     }
   </script>
