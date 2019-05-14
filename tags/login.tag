@@ -45,13 +45,13 @@
                  refUser = firebase.database().ref("Users/" + firebase.auth().currentUser.uid + '/Projects');
             });
             this.update();
+            this.checkProject();
           });
       }
       else {
         this.user = null;
         stopListening();
       }
-      this.checkProject();
       this.update();
     });
     // check if have Projects
