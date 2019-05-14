@@ -4,10 +4,14 @@
   <button show={ !user } class="btn btn-outline-success my-2 my-sm-0 float-right" type="button" onclick={ login }>Login</button>
   <button show={ user } class="btn btn-outline-danger my-2 my-sm-0 float-right" type="button" onclick={ logout }>Logout</button>
   <br><br>
-  <h1 class="display-3 text-center">Making with Monsters</h1>
+  <div show={!user}>
+    <h1 class="display-3 text-center">Making with Monsters</h1>
+    <img class="rounded mx-auto d-block" src="assets/images/monsters/allMonsters.png">
+  </div>
   <br><br>
   <div show={ user }>
     <!-- if user signin shows them their homepage -->
+    <h1 class="display-3 text-center">Making with Monsters</h1>
     <home></home>
 
   </div>
