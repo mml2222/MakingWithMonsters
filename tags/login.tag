@@ -6,23 +6,14 @@
     <!-- if user signin shows them their homepage -->
     <home></home>
 
-    <!-- todo: MOVE TO HOME -->
-    <!-- first time using the app -->
-    <div show={ !newProject }>
-        <create></create>
-    </div>
-
-    <!-- mount new project when existing -->
-    <div show={ !newProject }>
-      <createExisting></createExisting>
-    </div>
-
   </div>
   <script>
     // JAVASCRIPT
     this.user;
     //set up database
     let database = firebase.firestore();
+    this.firstProject = false;
+    this.newProject = false;
     // reference to current user
     let refUser;
     login() {
@@ -31,43 +22,52 @@
 		}
 		logout() {
 			firebase.auth().signOut();
-      let a;
-      refUser.once("value").then(function(snapshot) {
-        a = snapshot.exists();
-      });
-      console.log(a);
 		}
 
     // Firebase authentication state listener
-		firebase.auth().onAuthStateChanged(userObj => {
-		  if (userObj) {
-		    this.user = userObj;
-				// start data listening
-        stopListening = database.collection('Users').onSnapshot(snapshot => {
-					snapshot.forEach(doc => {
-            let userInfo = {
-              id: firebase.auth().currentUser.uid,
-              name: firebase.auth().currentUser.displayName,
-              email: firebase.auth().currentUser.email
-            };
-             database.collection('Users').doc(firebase.auth().currentUser.uid).set(userInfo);
-             refUser = firebase.database().ref("Users/" + firebase.auth().currentUser.uid + '/Projects');
+    firebase.auth().onAuthStateChanged(userObj => {
+      if (userObj) {
+          this.user = userObj;
+            // start data listening
+            stopListening = database.collection('Users').onSnapshot(snapshot => {
+              snapshot.forEach(doc => {
+                let userInfo = {
+                  id: firebase.auth().currentUser.uid,
+                  name: firebase.auth().currentUser.displayName,
+                  email: firebase.auth().currentUser.email
+                };
+                database.doc('Users/' + firebase.auth().currentUser.uid).get()
+                  .then(docSnapshot => {
+                  if (!docSnapshot.exists) {
+                     database.collection('Users').doc(firebase.auth().currentUser.uid).set(userInfo);
+                   }
+                 });
+                 refUser = firebase.database().ref("Users/" + firebase.auth().currentUser.uid + '/Projects');
+            });
+            this.update();
           });
-					this.update();
-		    })
       }
       else {
-		    this.user = null;
-				stopListening();
-		  }
-			this.update();
-		});
-
-    //check if user has previous projects
-
-
-  // console.log(a);
-
+        this.user = null;
+        stopListening();
+      }
+      this.checkProject();
+      this.update();
+    });
+    // check if have Projects
+    checkProject(){
+      this.projectCollection = database.collection('Users/').doc(firebase.auth().currentUser.uid).collection('Projects');
+      this.projectCollection.get().then((querySnapshot) => {
+        if (querySnapshot.empty === true) {
+          this.firstProject = true;
+          observer.trigger('project:firstProject', this.firstProject);
+        }
+        else {
+          this.newProject = true;
+          observer.trigger('project:newProject', this.newProject);
+        }
+      });
+    }
 
   </script>
 
