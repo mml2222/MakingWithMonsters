@@ -25,30 +25,35 @@
 		}
 
     // Firebase authentication state listener
-		firebase.auth().onAuthStateChanged(userObj => {
-		  if (userObj) {
-		    this.user = userObj;
-				// start data listening
-        stopListening = database.collection('Users').onSnapshot(snapshot => {
-					snapshot.forEach(doc => {
-            let userInfo = {
-              id: firebase.auth().currentUser.uid,
-              name: firebase.auth().currentUser.displayName,
-              email: firebase.auth().currentUser.email
-            };
-             database.collection('Users').doc(firebase.auth().currentUser.uid).set(userInfo);
-             refUser = firebase.database().ref("Users/" + firebase.auth().currentUser.uid + '/Projects');
+    firebase.auth().onAuthStateChanged(userObj => {
+      if (userObj) {
+          this.user = userObj;
+            // start data listening
+            stopListening = database.collection('Users').onSnapshot(snapshot => {
+              snapshot.forEach(doc => {
+                let userInfo = {
+                  id: firebase.auth().currentUser.uid,
+                  name: firebase.auth().currentUser.displayName,
+                  email: firebase.auth().currentUser.email
+                };
+                database.doc('Users/' + firebase.auth().currentUser.uid).get()
+                  .then(docSnapshot => {
+                  if (!docSnapshot.exists) {
+                     database.collection('Users').doc(firebase.auth().currentUser.uid).set(userInfo);
+                   }
+                 });
+                 refUser = firebase.database().ref("Users/" + firebase.auth().currentUser.uid + '/Projects');
+            });
+            this.update();
           });
-					this.update();
-		    })
       }
       else {
-		    this.user = null;
-				stopListening();
-		  }
+        this.user = null;
+        stopListening();
+      }
       this.checkProject();
-			this.update();
-		});
+      this.update();
+    });
     // check if have Projects
     checkProject(){
       this.projectCollection = database.collection('Users/').doc(firebase.auth().currentUser.uid).collection('Projects');
