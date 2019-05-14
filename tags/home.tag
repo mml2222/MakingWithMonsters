@@ -20,7 +20,6 @@
     this.db = firebase.firestore();
 
     observer.on('project:created', (curProject, inputProjectTitle) => {
-      console.log('IN PROJECT:CREATED OBSERVER');
       this.showPickMonsters = true;
       this.showProjectTitle = true;
       this.inputProjectTitle = inputProjectTitle;
@@ -29,7 +28,6 @@
     });
     // receives projectId
     observer.on('project:inprogress', (curProjectId) => {
-      console.log('IN PROJECT:INPROGRESS OBSERVER');
       this.showPickMonsters = false;
       this.showAskMonster = true;
       this.projectId = curProjectId;
@@ -38,11 +36,10 @@
     });
 
     observer.on('project:newProject', (newProject) => {
-      console.log('IN PROJECT:newProject OBSERVER');
       this.newProject = true;
       this.firstProject = false;
       this.showAskMonster = true;
-      this.showProjectTitle = true;
+//      this.showProjectTitle = true;
 
       refCurProject= this.db.doc('Users/' + firebase.auth().currentUser.uid);
       refUserProject = this.db.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects');
