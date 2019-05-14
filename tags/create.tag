@@ -2,7 +2,7 @@
   <!-- HTML -->
   <!-- button for first time using the app -->
   <div show={ firstProject }>
-    <button class="btn btn-success my-2 my-sm-0 offset-md-3" data-toggle="modal" data-target="#startNewProject" onclick={ firstProject }>Start a Project</button>
+    <button class="btn btn-success my-2 my-sm-0 offset-md-3 " data-toggle="modal" data-target="#startNewProject" onclick={ firstProject }>Start a Project</button>
   </div>
   <!-- button to start a new project -->
   <div show={ newProject }>
