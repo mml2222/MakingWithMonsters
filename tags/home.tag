@@ -1,9 +1,11 @@
 <home>
   <!-- HTML -->
   <create></create>
-  <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" show={showAskMonster} onclick={ askMonster }>Ask a Monster for Help</button>
+  <button class="btn btn-outline-danger my-2 my-sm-0 offset-md-3" type="button" show={ showAskMonster } onclick={ askMonster }>Ask a Monster for Help</button>
+
   <div show={showProjectTitle}>
     <h1> My Project: {inputProjectTitle} </h1>
+    <img src="assets/images/map/map.png">
   </div>
    <div show={ showPickMonsters }>
      <pickMonster></pickMonster>
@@ -15,6 +17,7 @@
     this.inputProjectTitle;
     this.firstProject = false;
     this.newProject = false;
+    this.db = firebase.firestore();
 
     observer.on('project:created', (curProject, inputProjectTitle) => {
       this.showPickMonsters = true;
@@ -28,12 +31,28 @@
       this.showPickMonsters = false;
       this.showAskMonster = true;
       this.projectId = curProjectId;
+      this.showProjectTitle = true;
       this.update();
     });
 
+    observer.on('project:newProject', (newProject) => {
+      this.newProject = true;
+      this.firstProject = false;
+      this.showAskMonster = true;
+      this.showProjectTitle = true;
+      //todo read project title to show in page
+      refCurProject= this.db.doc('Users/' + firebase.auth().currentUser.uid);
+      refUserProject = this.db.doc('Users/' + firebase.auth().currentUser.uid).collection('Projects');
+      refCurProject.onSnapshot(function (doc) {
+        let projectId = doc.data().curProjectId;
+        this.inputProjectTitle = doc.data().curProjectName;
+      });
+      this.update();
+  });
+    console.log();
     askMonster() {
       this.showPickMonsters = true;
-      this.showAskMonster = false;
+      this.showAskMonster = true;
       observer.trigger('project:askMonster', this.projectId);
     }
   </script>
